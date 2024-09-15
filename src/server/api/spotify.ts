@@ -1,4 +1,4 @@
-import { Playlist } from "@/types";
+import { Playlist, Track } from "@/types";
 
 const BASE_URL = "https://api.spotify.com/v1";
 const USER_ID = process.env.SPOTIFY_USER_ID;
@@ -48,7 +48,7 @@ export async function lookupSong({
 }: {
   artist: string;
   title: string;
-}) {
+}): Promise<Track | null> {
   const urlEncodedArtist = encodeURIComponent(artist);
   const urlEncodedTitle = encodeURIComponent(title);
 

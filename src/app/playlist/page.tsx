@@ -1,6 +1,7 @@
 import { generatePlaylist } from "@/actions/createPlaylist";
 import { PlaylistPage } from "@/components/PlaylistPage";
 import { lookupSong } from "@/server/api/spotify";
+import { Track } from "@/types";
 
 export default async function Playlist({
   searchParams,
@@ -15,7 +16,12 @@ export default async function Playlist({
   );
 
   const playlist = await Promise.allSettled(spotifyRequests).then((results) => {
-    return results.map((result) => result.value);
+    return results.reduce((acc, cur) => {
+      if (cur.status === "fulfilled" && cur.value !== null) {
+        return [...acc, cur.value];
+      }
+      return acc;
+    }, [] as Track[]);
   });
 
   return <PlaylistPage playlist={playlist} />;
