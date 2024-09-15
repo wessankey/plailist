@@ -18,7 +18,7 @@ export function Track({
   popularity,
 }: TrackType) {
   return (
-    <div className="flex gap-3 justify-between w-[30rem] border border-gray-100 p-4 rounded-md shadow-sm hover:bg-gray-100 hover:cursor-pointer">
+    <div className="flex gap-3 justify-between max-w-[40rem] w-ful border-2 border-gray-500 p-4 rounded-md shadow-sm hover:bg-gray-100 hover:cursor-pointer">
       <div className="flex gap-3">
         <Image
           src={images[2].url}
@@ -31,16 +31,16 @@ export function Track({
           <h2 className="font-bold text-md truncate overflow-hidden text-ellipsis whitespace-nowrap">
             {name}
           </h2>
-          <p className="text-gray-600 text-sm">{artist}</p>
+          <p className="text-gray-700 text-sm">{artist}</p>
         </div>
       </div>
 
       <div className="flex gap-4">
-        <p className="text-gray-500 text-sm">
+        <p className="text-gray-600 text-sm">
           {msToMinutesAndSeconds(duration)}
         </p>
 
-        <Trash2 className="text-gray-500 hover:cursor-pointer hover:scale-105 size-5 hover:text-red-400" />
+        <Trash2 className="text-gray-700 hover:cursor-pointer hover:scale-105 size-5 hover:text-red-500" />
       </div>
     </div>
   );
