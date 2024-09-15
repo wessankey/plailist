@@ -20,7 +20,7 @@ const playlistResponseSchema = z.object({
 
 export async function generatePlaylist(artist: string) {
   const anthropic = createAnthropic({
-    apiKey: process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY,
+    apiKey: process.env.ANTHROPIC_API_KEY,
   });
 
   const { object } = await generateObject({
