@@ -18,10 +18,10 @@ export function PlaylistPage({ playlist }: PlaylistPageProps) {
 
   const handleCreatePlaylist = async () => {
     setIsLoading(true);
-    const playlistCreated = await createPlaylist(playlist);
+    const playlistUrl = await createPlaylist(playlist);
 
-    if (playlistCreated) {
-      router.push("/success");
+    if (playlistUrl) {
+      router.push("/success?playlistUrl=" + encodeURI(playlistUrl));
     }
   };
 
