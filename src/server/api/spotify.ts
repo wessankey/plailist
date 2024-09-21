@@ -3,7 +3,9 @@ import { Playlist, Track } from "@/types";
 const BASE_URL = "https://api.spotify.com/v1";
 const USER_ID = process.env.SPOTIFY_USER_ID;
 
-export async function createPlaylist(playlist: Playlist): Promise<boolean> {
+export async function createPlaylist(
+  playlist: Playlist
+): Promise<string | undefined> {
   const url = `${BASE_URL}/users/${USER_ID}/playlists`;
   const response = await fetch(url, {
     method: "POST",
@@ -17,11 +19,15 @@ export async function createPlaylist(playlist: Playlist): Promise<boolean> {
     }),
   });
 
-  if (response.status !== 201) return false;
+  if (response.status !== 201) return undefined;
   const playlistResponse = await response.json();
 
   const trackUris = playlist.map((track) => track.uri);
-  return await addTracksToPlaylist(playlistResponse.id, trackUris);
+  const tracksAdded = await addTracksToPlaylist(playlistResponse.id, trackUris);
+
+  if (tracksAdded) {
+    return playlistResponse.external_urls.spotify;
+  }
 }
 
 export async function addTracksToPlaylist(

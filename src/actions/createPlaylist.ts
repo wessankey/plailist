@@ -41,6 +41,8 @@ export async function generatePlaylist(artist: string) {
   return object.playlist;
 }
 
-export async function createPlaylist(playlist: Playlist): Promise<boolean> {
+export async function createPlaylist(
+  playlist: Playlist
+): Promise<string | undefined> {
   return await createPlaylistSpotify(playlist);
 }
