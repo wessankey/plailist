@@ -1,4 +1,4 @@
-export type Track = {
+export type TTrack = {
   artist: string;
   name: string;
   album: string;
@@ -12,4 +12,4 @@ export type Track = {
   popularity: number;
 };
 
-export type Playlist = Track[];
+export type TPlaylist = TTrack[];

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
-import { Track as TrackType } from "@/types";
+import { TTrack } from "@/types";
 
 const msToMinutesAndSeconds = (ms: number) => {
   const minutes = Math.floor(ms / 60000);
@@ -8,7 +8,7 @@ const msToMinutesAndSeconds = (ms: number) => {
   return `${minutes}:${parseInt(seconds) < 10 ? `0${seconds}` : seconds}`;
 };
 
-type TrackProps = TrackType & {
+type TrackProps = TTrack & {
   removeTrack: (uri: string) => void;
 };
 

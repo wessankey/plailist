@@ -7,7 +7,6 @@ type LoaderProps = {
 export function Loader({ text }: LoaderProps) {
   return (
     <div className="w-80 h-40">
-      {/* <Line index={0} color="#67d8bc" /> */}
       <Line index={0} color="#0c750f" />
       <Line index={1} color="#6553bf" />
       <Line index={2} color="#fbbf24" />
