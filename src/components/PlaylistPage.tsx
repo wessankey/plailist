@@ -9,12 +9,17 @@ import { Playlist } from "@/types";
 import { createPlaylist } from "@/actions/createPlaylist";
 
 type PlaylistPageProps = {
-  playlist: Playlist;
+  generatedPlaylist: Playlist;
 };
 
-export function PlaylistPage({ playlist }: PlaylistPageProps) {
+export function PlaylistPage({ generatedPlaylist }: PlaylistPageProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [playlist, setPlaylist] = useState(generatedPlaylist);
+
+  const handleRemoveTrack = (uri: string) => {
+    setPlaylist((playlist) => playlist.filter((track) => track.uri !== uri));
+  };
 
   const handleCreatePlaylist = async () => {
     setIsLoading(true);
@@ -34,7 +39,7 @@ export function PlaylistPage({ playlist }: PlaylistPageProps) {
           <div className="overflow-auto w-full mt-3">
             {playlist.filter(Boolean).map((song) => (
               <div key={song.uri} className="mt-5 ">
-                <Track {...song} />
+                <Track {...song} removeTrack={handleRemoveTrack} />
               </div>
             ))}
           </div>
