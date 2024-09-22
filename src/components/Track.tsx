@@ -1,11 +1,15 @@
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
-import { Track as TrackType } from "@/types";
+import { TTrack } from "@/types";
 
 const msToMinutesAndSeconds = (ms: number) => {
   const minutes = Math.floor(ms / 60000);
   const seconds = ((ms % 60000) / 1000).toFixed(0);
   return `${minutes}:${parseInt(seconds) < 10 ? `0${seconds}` : seconds}`;
+};
+
+type TrackProps = TTrack & {
+  removeTrack: (uri: string) => void;
 };
 
 export function Track({
@@ -16,7 +20,8 @@ export function Track({
   images,
   duration,
   popularity,
-}: TrackType) {
+  removeTrack,
+}: TrackProps) {
   return (
     <div className="flex gap-3 justify-between max-w-[40rem] w-ful border-2 border-gray-500 p-4 rounded-md shadow-sm hover:bg-gray-100 hover:cursor-pointer">
       <div className="flex gap-3">
@@ -40,7 +45,10 @@ export function Track({
           {msToMinutesAndSeconds(duration)}
         </p>
 
-        <Trash2 className="text-gray-700 hover:cursor-pointer hover:scale-105 size-5 hover:text-red-500" />
+        <Trash2
+          onClick={() => removeTrack(uri)}
+          className="text-gray-700 hover:cursor-pointer hover:scale-105 size-5 hover:text-red-500"
+        />
       </div>
     </div>
   );

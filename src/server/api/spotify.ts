@@ -1,10 +1,10 @@
-import { Playlist, Track } from "@/types";
+import { TPlaylist, TTrack } from "@/types";
 
 const BASE_URL = "https://api.spotify.com/v1";
 const USER_ID = process.env.SPOTIFY_USER_ID;
 
 export async function createPlaylist(
-  playlist: Playlist
+  playlist: TPlaylist
 ): Promise<string | undefined> {
   const url = `${BASE_URL}/users/${USER_ID}/playlists`;
   const response = await fetch(url, {
@@ -54,7 +54,7 @@ export async function lookupSong({
 }: {
   artist: string;
   title: string;
-}): Promise<Track | null> {
+}): Promise<TTrack | null> {
   const urlEncodedArtist = encodeURIComponent(artist);
   const urlEncodedTitle = encodeURIComponent(title);
 
