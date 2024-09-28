@@ -142,16 +142,16 @@ const AddSongsModal = ({
                 value={songCount}
                 onChange={setSongCount}
                 aria-label="Server size"
+                className="flex gap-3 mt-3"
               >
                 {plans.map((plan) => (
                   <Field key={plan} className="flex items-center gap-2">
                     <Radio
                       value={plan}
-                      className="group flex size-5 items-center justify-center rounded-full border bg-white data-[checked]:bg-blue-400"
+                      className="group w-20 h-16 flex cursor-pointer border-[3px] border-gray-300 rounded-lg py-4 px-5 transition items-center data-[checked]:border-amber-400 justify-center"
                     >
-                      <span className="invisible size-2 rounded-full bg-white group-data-[checked]:visible" />
+                      <div className="font-bold text-xl">{plan}</div>
                     </Radio>
-                    <Label>{plan}</Label>
                   </Field>
                 ))}
               </RadioGroup>
