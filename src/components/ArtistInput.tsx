@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -17,16 +19,15 @@ export function ArtistInput({ initialArtist }: ArtistInputProps) {
 
       <input
         type="text"
-        className="border mt-10 border-gray-300  rounded-md text-4xl px-3 py-2 font-bold"
+        className="border mt-10 border-gray-300  rounded-full text-4xl px-6 py-2 font-bold"
         onChange={(e) => setArtist(e.target.value)}
         value={artist}
       />
 
       <button
-        onClick={() => {
-          router.push(`/playlist?artist=${artist}`);
-        }}
-        className="mt-8 w-3/4 max-w-[400px] bg-green-700 text-white text-xl font-bold p-3 rounded-full hover:scale-101"
+        onClick={() => router.push(`/playlist?artist=${artist}`)}
+        disabled={!artist}
+        className="mt-8 w-3/4 max-w-[400px] bg-green-700 text-white text-xl font-bold p-3 rounded-full hover:scale-101 disabled:bg-gray-400 disabled:hover:scale-100 disabled:cursor-not-allowed"
       >
         Generate Playlist
       </button>

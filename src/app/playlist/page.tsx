@@ -10,7 +10,7 @@ export default async function Playlist({
   const artist = searchParams.artist as string;
 
   return (
-    <Suspense fallback={<Loading artist={artist} />}>
+    <Suspense fallback={<Loading />}>
       <PlaylistController artist={artist} />
     </Suspense>
   );

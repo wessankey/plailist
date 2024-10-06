@@ -27,15 +27,15 @@ function Line({ index, color }: { index: number; color: string }) {
             duration: 1,
             repeat: Infinity,
             repeatType: "reverse",
-            delay: index * 0.15,
+            delay: index * 0.05,
           },
         }}
         x1="10"
         y1="5"
         y2="5"
-        stroke-linecap="round"
+        strokeLinecap="round"
         stroke={color}
-        stroke-width="5"
+        strokeWidth="5"
       />
     </svg>
   );

@@ -16,6 +16,10 @@ const GENERATE_SYSTEM_PROMPT = `You have incredible taste in music and a deep, w
   - The playlist should not include more than one song from the same artist 
   - The response should be a JSON array containing an object for each song with the following properties: title and artist.`;
 
+const CHECK_ARTIST_EXISTS_SYSTEM_PROMPT = `You are a music expert with knowledge of all existing artists and musicians. The user will provide you with an artist, and you are tasked with determining if the artist exists. The name does not need to be an exact match. For example: the user input "black keys" refers to "The Black Keys". The response should be a JSON object with the following properties:
+- exists: a boolean indicating whether the artist exists
+- didYouMean: an array of strings containing the names of existing artists that are similar to the provided artist. This should be empty if the artist exists.`;
+
 const ADD_SYSTEM_PROMPT =
   GENERATE_SYSTEM_PROMPT +
   `
@@ -28,6 +32,11 @@ const playlistSchema = z.object({
       artist: z.string().describe("The artist of the song"),
     })
   ),
+});
+
+const artistExistsSchema = z.object({
+  exists: z.boolean().describe("Whether the artist exists"),
+  didYouMean: z.array(z.string()).describe("Artists with similar names"),
 });
 
 type TPlaylistSchema = z.infer<typeof playlistSchema>;
@@ -121,6 +130,29 @@ export async function addSongs(
 export async function buildPlaylist(artist: string) {
   const songs = await generatePlaylist(artist);
   return await getSongDetails(songs);
+}
+
+export async function checkArtistExists(artist: string) {
+  const anthropic = createAnthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+  });
+
+  const { object } = await generateObject({
+    model: anthropic("claude-3-5-sonnet-20240620"),
+    messages: [
+      {
+        role: "system",
+        content: CHECK_ARTIST_EXISTS_SYSTEM_PROMPT,
+      },
+      {
+        role: "user",
+        content: artist,
+      },
+    ],
+    schema: artistExistsSchema,
+  });
+
+  return object;
 }
 
 export async function createPlaylist(
