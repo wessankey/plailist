@@ -2,14 +2,30 @@
 
 import { redirect } from "next/navigation";
 
+function generateRandomString(length: number) {
+  if (length <= 0) {
+    throw new Error("Length must be a positive integer");
+  }
+
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+
+  return result;
+}
+
 export async function login() {
   const params = {
     response_type: "code",
     client_id: process.env.SPOTIFY_CLIENT_ID,
-    scope: "user-read-private user-read-email",
+    scope:
+      "user-read-private user-read-email playlist-modify-private playlist-modify-public",
     redirect_uri: "http://localhost:3000/login/callback",
-    // TODO: generate random 16 character string
-    state: "d9f09xjdjk3d0kvn",
+    state: generateRandomString(16),
   };
 
   // @ts-ignore - URLSearchParams accepts an object despite what the TS types say
@@ -22,15 +38,14 @@ export async function requestAccessToken(code: string) {
   const clientId = process.env.SPOTIFY_CLIENT_ID;
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
-  const headers = new Headers();
-  headers.append("Content-Type", "application/x-www-form-urlencoded");
-  headers.append(
-    "Authorization",
-    "Basic " + new Buffer.from(clientId + ":" + clientSecret).toString("base64")
-  );
+  const headers = new Headers({
+    "Content-Type": "application/x-www-form-urlencoded",
+    Authorization:
+      "Basic " + Buffer.from(clientId + ":" + clientSecret).toString("base64"),
+  });
 
   const urlEncodedRedirectUri = encodeURIComponent(
-    "http://localhost:3000/login/success"
+    "http://localhost:3000/login/callback"
   );
 
   const body = `grant_type=authorization_code&redirect_uri=${urlEncodedRedirectUri}&code=${code}`;
@@ -39,11 +54,17 @@ export async function requestAccessToken(code: string) {
     method: "POST",
     headers,
     body,
-    redirect: "follow",
   };
 
-  fetch("https://accounts.spotify.com/api/token", requestOptions)
-    .then((response) => response.text())
-    .then((result) => console.log(result))
-    .catch((error) => console.error(error));
+  const res = await fetch(
+    "https://accounts.spotify.com/api/token",
+    requestOptions
+  );
+
+  const data = await res.json();
+
+  return {
+    accessToken: data.access_token,
+    refreshToken: data.refresh_token,
+  };
 }

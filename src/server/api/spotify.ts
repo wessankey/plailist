@@ -1,4 +1,5 @@
 import { TPlaylist, TTrack } from "@/types";
+import { cookies } from "next/headers";
 
 const BASE_URL = "https://api.spotify.com/v1";
 const USER_ID = process.env.SPOTIFY_USER_ID;
@@ -6,11 +7,12 @@ const USER_ID = process.env.SPOTIFY_USER_ID;
 export async function createPlaylist(
   playlist: TPlaylist
 ): Promise<string | undefined> {
+  const accessToken = cookies().get("access_token")?.value;
   const url = `${BASE_URL}/users/${USER_ID}/playlists`;
   const response = await fetch(url, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.SPOTIFY_API_KEY}`,
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
       name: "AI Generated Playlist",
@@ -34,11 +36,12 @@ export async function addTracksToPlaylist(
   playlistId: string,
   trackUris: string[]
 ) {
+  const accessToken = cookies().get("access_token")?.value;
   const url = `${BASE_URL}/playlists/${playlistId}/tracks`;
   const response = await fetch(url, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.SPOTIFY_API_KEY}`,
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
       uris: trackUris,
@@ -55,6 +58,7 @@ export async function lookupSong({
   artist: string;
   title: string;
 }): Promise<TTrack | null> {
+  const accessToken = cookies().get("access_token")?.value;
   const urlEncodedArtist = encodeURIComponent(artist);
   const urlEncodedTitle = encodeURIComponent(title);
 
@@ -62,7 +66,7 @@ export async function lookupSong({
 
   const response = await fetch(url, {
     headers: {
-      Authorization: `Bearer ${process.env.SPOTIFY_API_KEY}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
 
