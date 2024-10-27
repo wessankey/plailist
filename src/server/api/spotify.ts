@@ -1,14 +1,17 @@
 import { TPlaylist, TTrack } from "@/types";
-import { cookies } from "next/headers";
+import { auth } from "../../../auth";
 
 const BASE_URL = "https://api.spotify.com/v1";
-const USER_ID = process.env.SPOTIFY_USER_ID;
 
 export async function createPlaylist(
   playlist: TPlaylist
 ): Promise<string | undefined> {
-  const accessToken = cookies().get("access_token")?.value;
-  const url = `${BASE_URL}/users/${USER_ID}/playlists`;
+  const session = await auth();
+  // @ts-ignore
+  const accessToken = session?.user?.access_token;
+  // @ts-ignore
+  const userId = session?.user?.user_id;
+  const url = `${BASE_URL}/users/${userId}/playlists`;
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -36,7 +39,9 @@ export async function addTracksToPlaylist(
   playlistId: string,
   trackUris: string[]
 ) {
-  const accessToken = cookies().get("access_token")?.value;
+  const session = await auth();
+  // @ts-ignore
+  const accessToken = session?.user?.access_token;
   const url = `${BASE_URL}/playlists/${playlistId}/tracks`;
   const response = await fetch(url, {
     method: "POST",
@@ -58,7 +63,9 @@ export async function lookupSong({
   artist: string;
   title: string;
 }): Promise<TTrack | null> {
-  const accessToken = cookies().get("access_token")?.value;
+  const session = await auth();
+  // @ts-ignore
+  const accessToken = session?.user?.access_token;
   const urlEncodedArtist = encodeURIComponent(artist);
   const urlEncodedTitle = encodeURIComponent(title);
 
