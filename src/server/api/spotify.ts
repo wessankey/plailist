@@ -1,16 +1,21 @@
 import { TPlaylist, TTrack } from "@/types";
+import { auth } from "../../../auth";
 
 const BASE_URL = "https://api.spotify.com/v1";
-const USER_ID = process.env.SPOTIFY_USER_ID;
 
 export async function createPlaylist(
   playlist: TPlaylist
 ): Promise<string | undefined> {
-  const url = `${BASE_URL}/users/${USER_ID}/playlists`;
+  const session = await auth();
+  // @ts-ignore
+  const accessToken = session?.user?.access_token;
+  // @ts-ignore
+  const userId = session?.user?.user_id;
+  const url = `${BASE_URL}/users/${userId}/playlists`;
   const response = await fetch(url, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.SPOTIFY_API_KEY}`,
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
       name: "AI Generated Playlist",
@@ -34,11 +39,14 @@ export async function addTracksToPlaylist(
   playlistId: string,
   trackUris: string[]
 ) {
+  const session = await auth();
+  // @ts-ignore
+  const accessToken = session?.user?.access_token;
   const url = `${BASE_URL}/playlists/${playlistId}/tracks`;
   const response = await fetch(url, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.SPOTIFY_API_KEY}`,
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
       uris: trackUris,
@@ -55,6 +63,9 @@ export async function lookupSong({
   artist: string;
   title: string;
 }): Promise<TTrack | null> {
+  const session = await auth();
+  // @ts-ignore
+  const accessToken = session?.user?.access_token;
   const urlEncodedArtist = encodeURIComponent(artist);
   const urlEncodedTitle = encodeURIComponent(title);
 
@@ -62,7 +73,7 @@ export async function lookupSong({
 
   const response = await fetch(url, {
     headers: {
-      Authorization: `Bearer ${process.env.SPOTIFY_API_KEY}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
 

@@ -11,8 +11,8 @@ import { z } from "zod";
 
 const GENERATE_SYSTEM_PROMPT = `You have incredible taste in music and a deep, wide knowledge of all genres of music. The user will provide you with an artist, and you are tasked with generating a playlist that meets the following criteria:
   - The playlist must include {SONG_COUNT} songs
-  - None of the songs should be by the provided artist
-  - The songs must be songs that exist and were written by the artist
+  - None of the songs should be written or performedby the provided artist
+  - The songs must be songs that actually exist
   - The playlist should not include more than one song from the same artist 
   - The response should be a JSON array containing an object for each song with the following properties: title and artist.`;
 
@@ -151,6 +151,8 @@ export async function checkArtistExists(artist: string) {
     ],
     schema: artistExistsSchema,
   });
+
+  console.log("log:checkArtistExists", object);
 
   return object;
 }

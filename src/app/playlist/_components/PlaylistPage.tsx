@@ -10,13 +10,12 @@ import {
   DialogPanel,
   DialogTitle,
   Field,
-  Label,
   Radio,
   RadioGroup,
 } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Loader } from "./Loader";
+import { Loader } from "../../../components/Loader";
 
 type PlaylistPageProps = {
   artist: string;
@@ -47,30 +46,32 @@ export function PlaylistPage({ artist, generatedPlaylist }: PlaylistPageProps) {
   };
 
   return (
-    <main className="relative">
-      <div className="m-4">
+    <div className="h-screen flex flex-col">
+      <main className="flex-1 overflow-auto p-8">
         <h1 className="text-5xl font-extrabold">Here&apos;s your playlist</h1>
         <PlaylistInfo />
-        <div className="flex items-center flex-col h-[50rem]">
-          <div className="overflow-auto w-full mt-3">
-            {playlist.filter(Boolean).map((song) => (
-              <div key={song.uri} className="mt-5 ">
-                <Track {...song} removeTrack={handleRemoveTrack} />
-              </div>
-            ))}
-          </div>
+
+        <div className=" w-full mt-3 mb-3">
+          {playlist.filter(Boolean).map((song) => (
+            <div key={song.uri} className="mt-5 ">
+              <Track {...song} removeTrack={handleRemoveTrack} />
+            </div>
+          ))}
         </div>
-        <button
-          onClick={handleCreatePlaylist}
-          className="mt-4 w-full bg-green-700 text-white text-xl font-bold p-3 rounded-full hover:scale-101"
-        >
-          Create Playlist
-        </button>
+      </main>
+
+      <div className="flex flex-col gap-4 justify-center items-center md:flex-row border-t-2 border-gray-300 w-full p-5">
         <button
           onClick={() => setIsOpen(true)}
-          className="mt-4 w-full bg-yellow-600 text-white text-xl font-bold p-3 rounded-full hover:scale-101"
+          className="md:mt-0 w-96 bg-yellow-600 text-white text-xl font-bold p-3 rounded-full hover:scale-101"
         >
           Add Songs
+        </button>
+        <button
+          onClick={handleCreatePlaylist}
+          className="md:mt-0 w-96 bg-green-700 text-white text-xl font-bold p-3 rounded-full hover:scale-101"
+        >
+          Create Playlist
         </button>
       </div>
 
@@ -91,7 +92,7 @@ export function PlaylistPage({ artist, generatedPlaylist }: PlaylistPageProps) {
         onClose={() => setIsOpen(false)}
         addSongsToPlaylist={addSongsToPlaylist}
       />
-    </main>
+    </div>
   );
 }
 

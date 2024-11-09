@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/playlist")) {
     const artist = request.nextUrl.searchParams.get("artist");
 
