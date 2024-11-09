@@ -23,7 +23,7 @@ export function Track({
   removeTrack,
 }: TrackProps) {
   return (
-    <div className="flex gap-3 justify-between max-w-[40rem] w-ful border-2 border-gray-500 p-4 rounded-md shadow-sm hover:bg-gray-100 hover:cursor-pointer">
+    <div className="flex gap-3 justify-between max-w-[40rem] md:max-w-[50rem] w-ful border-2 border-gray-500 p-4 rounded-md shadow-sm hover:bg-gray-100 hover:cursor-pointer bg-white">
       <div className="flex gap-3">
         <Image
           src={images[2].url}

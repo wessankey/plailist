@@ -13,7 +13,7 @@ export function PlaylistInfo() {
   if (!isDisplayed) return null;
 
   return (
-    <div className="rounded-md bg-blue-100 p-4 mt-4 relative">
+    <div className="rounded-md bg-blue-100 p-4 mt-4 relative max-w-[50rem]">
       <p>
         Remove any songs you don&apos;t like by clicking the{" "}
         <span>

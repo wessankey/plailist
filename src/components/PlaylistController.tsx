@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 export async function PlaylistController({ artist }: { artist: string }) {
   const artistExistsResponse = await checkArtistExists(artist);
+
   if (!artistExistsResponse.exists) {
     const didYouMean = artistExistsResponse.didYouMean.join("|");
     const urlEncodedDidYouMean = encodeURIComponent(didYouMean);

@@ -12,7 +12,7 @@ export default function SuccessPage({
   return (
     <div className="w-full h-screen flex flex-col items-center">
       <h1 className="text-6xl font-bold mt-10 mb-5">Success!</h1>
-      <Music4 size={80} />
+      <div className="text-8xl">🤘</div>
 
       <p className="mt-3 text-lg font-semibold">
         Click the button below to listen to your new playlist!

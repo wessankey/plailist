@@ -1,9 +1,12 @@
+import { redirect } from "next/navigation";
 import { auth, signIn } from "../../../auth";
 
 export default async function LoginPage() {
-  const myAuth = await auth();
+  const session = await auth();
 
-  console.log("log:auth:", myAuth);
+  if (session) {
+    redirect("/");
+  }
 
   return (
     <div className="flex justify-center mt-32">
