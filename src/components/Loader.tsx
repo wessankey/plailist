@@ -2,16 +2,18 @@ import { motion } from "framer-motion";
 
 type LoaderProps = {
   text: string;
+  emoji?: string;
 };
 
-export function Loader({ text }: LoaderProps) {
+export function Loader({ text, emoji }: LoaderProps) {
   return (
     <div className="w-80 h-40">
       <Line index={0} color="#0c750f" />
       <Line index={1} color="#6553bf" />
       <Line index={2} color="#fbbf24" />
 
-      <p className="text-center mt-4">{text}</p>
+      <p className="text-center mt-4 text-2xl font-semibold">{text}</p>
+      {emoji && <p className="text-center mt-4 text-5xl">{emoji}</p>}
     </div>
   );
 }

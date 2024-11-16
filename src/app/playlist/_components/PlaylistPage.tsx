@@ -16,6 +16,8 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader } from "../../../components/Loader";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 type PlaylistPageProps = {
   artist: string;
@@ -45,11 +47,21 @@ export function PlaylistPage({ artist, generatedPlaylist }: PlaylistPageProps) {
     setPlaylist((playlist) => [...playlist, ...additionalSongs]);
   };
 
+  const uris = new Set(playlist.map((track) => track.uri));
+  console.log("log:uris:", uris.size);
+
   return (
     <div className="h-screen flex flex-col">
       <main className="flex-1 overflow-auto p-8">
         <h1 className="text-5xl font-extrabold">Here&apos;s your playlist</h1>
         <PlaylistInfo />
+
+        <Link
+          href="/"
+          className="w-fit text-lg flex items-center gap-1 font-semibold mt-3 hover:text-yellow-600"
+        >
+          <ArrowLeft /> <span> Back to Search</span>
+        </Link>
 
         <div className=" w-full mt-3 mb-3">
           {playlist.filter(Boolean).map((song) => (
@@ -126,6 +138,8 @@ const AddSongsModal = ({
     );
 
     addSongsToPlaylist(additionalSongs);
+    setIsLoading(false);
+    setSongCount(plans[0]);
     onClose();
   };
 

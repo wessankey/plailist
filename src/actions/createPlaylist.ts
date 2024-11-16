@@ -11,12 +11,19 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { generateObject } from "ai";
 import { z } from "zod";
 
+const anthropic = createAnthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
 const GENERATE_SYSTEM_PROMPT = `You have incredible taste in music and a deep, wide knowledge of all genres of music. The user will provide you with an artist, and you are tasked with generating a playlist that meets the following criteria:
+  - The playlist should be a mix of songs that are similar in style to the provided artist
   - The playlist must include {SONG_COUNT} songs
-  - None of the songs should be written or performedby the provided artist
+  - None of the songs should be written or performed by the provided artist
+  - Each recommended song needs to include the song title and the artist. Ensure that the song is actually a song by the artist.
   - The songs must be songs that actually exist
-  - The playlist should not include more than one song from the same artist 
-  - The response should be a JSON array containing an object for each song with the following properties: title and artist.`;
+  - The playlist should not include more than one song from the same artist
+  - The response should be a JSON array containing an object for each song with the following properties: title and artist
+  `;
 
 const CHECK_ARTIST_EXISTS_SYSTEM_PROMPT = `You are a music expert with knowledge of all existing artists and musicians. The user will provide you with an artist, and you are tasked with determining if the artist exists. The name does not need to be an exact match. For example: the user input "black keys" refers to "The Black Keys". The response should be a JSON object with the following properties:
 - exists: a boolean indicating whether the artist exists
@@ -44,16 +51,12 @@ const artistExistsSchema = z.object({
 type TPlaylistSchema = z.infer<typeof playlistSchema>;
 
 async function generatePlaylist(artist: string) {
-  const anthropic = createAnthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
-  });
-
   const { object } = await generateObject({
     model: anthropic("claude-3-5-sonnet-20240620"),
     messages: [
       {
         role: "system",
-        content: GENERATE_SYSTEM_PROMPT.replace("{SONG_COUNT}", "10"),
+        content: GENERATE_SYSTEM_PROMPT.replace("{SONG_COUNT}", "20"),
       },
       {
         role: "user",
@@ -71,12 +74,8 @@ async function generateAdditionalSongList(
   songCount: number,
   currentPlaylist: TPlaylistSchema["playlist"]
 ) {
-  const anthropic = createAnthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
-  });
-
   const prompt =
-    ADD_SYSTEM_PROMPT.replace("{SONG_COUNT}", songCount.toString()) +
+    ADD_SYSTEM_PROMPT.replace("{SONG_COUNT}", (songCount * 3).toString()) +
     "\n" +
     JSON.stringify(currentPlaylist);
 
@@ -128,19 +127,17 @@ export async function addSongs(
     currentPlaylist
   );
 
-  return await getSongDetails(songs);
+  const songDetails = await getSongDetails(songs);
+  return songDetails.slice(0, songCount);
 }
 
 export async function buildPlaylist(artist: string) {
   const songs = await generatePlaylist(artist);
-  return await getSongDetails(songs);
+  const songDetails = await getSongDetails(songs);
+  return songDetails.slice(0, 10);
 }
 
 export async function checkArtistExists(artist: string) {
-  const anthropic = createAnthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
-  });
-
   const { object } = await generateObject({
     model: anthropic("claude-3-5-sonnet-20240620"),
     messages: [
