@@ -2,10 +2,12 @@
 
 import {
   createPlaylist as createPlaylistSpotify,
+  getAccessToken,
   lookupSong,
 } from "@/server/api/spotify";
 import { TPlaylist, TTrack } from "@/types";
 import { createAnthropic } from "@ai-sdk/anthropic";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { generateObject } from "ai";
 import { z } from "zod";
 
@@ -97,8 +99,10 @@ async function generateAdditionalSongList(
 }
 
 async function getSongDetails(songs: TPlaylistSchema["playlist"]) {
+  const accessToken = await getAccessToken();
+
   const spotifyRequests = songs.map((song) =>
-    lookupSong({ artist: song.artist, title: song.title })
+    lookupSong({ artist: song.artist, title: song.title, accessToken })
   );
 
   const playlist = await Promise.allSettled(spotifyRequests).then((results) => {
@@ -152,13 +156,15 @@ export async function checkArtistExists(artist: string) {
     schema: artistExistsSchema,
   });
 
-  console.log("log:checkArtistExists", object);
-
   return object;
 }
 
 export async function createPlaylist(
   playlist: TPlaylist
 ): Promise<string | undefined> {
-  return await createPlaylistSpotify(playlist);
+  const user = await currentUser();
+  const userId = user?.externalAccounts[0].externalId;
+  if (!userId) throw new Error("User not found");
+
+  return await createPlaylistSpotify(playlist, userId);
 }
