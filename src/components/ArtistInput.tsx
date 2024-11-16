@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useSession } from "next-auth/react";
 
 type ArtistInputProps = {
   initialArtist?: string;
@@ -10,19 +9,9 @@ type ArtistInputProps = {
 
 export function ArtistInput({ initialArtist }: ArtistInputProps) {
   const router = useRouter();
-  const session = useSession();
 
   const [artist, setArtist] = useState(initialArtist ?? "");
   const [isLoading, setIsLoading] = useState(false);
-
-  if (session.status === "loading") {
-    return null;
-  }
-
-  if (session.status === "unauthenticated") {
-    router.push("/login");
-    return;
-  }
 
   return (
     <div className="w-full h-screen flex items-center flex-col p-5 md:pt-40">

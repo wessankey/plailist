@@ -1,16 +1,13 @@
 import { TPlaylist, TTrack } from "@/types";
-import { auth } from "../../../auth";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
 const BASE_URL = "https://api.spotify.com/v1";
 
 export async function createPlaylist(
-  playlist: TPlaylist
+  playlist: TPlaylist,
+  userId: string
 ): Promise<string | undefined> {
-  const session = await auth();
-  // @ts-ignore
-  const accessToken = session?.user?.access_token;
-  // @ts-ignore
-  const userId = session?.user?.user_id;
+  const accessToken = await getAccessToken();
   const url = `${BASE_URL}/users/${userId}/playlists`;
   const response = await fetch(url, {
     method: "POST",
@@ -28,7 +25,11 @@ export async function createPlaylist(
   const playlistResponse = await response.json();
 
   const trackUris = playlist.map((track) => track.uri);
-  const tracksAdded = await addTracksToPlaylist(playlistResponse.id, trackUris);
+  const tracksAdded = await addTracksToPlaylist(
+    playlistResponse.id,
+    trackUris,
+    accessToken
+  );
 
   if (tracksAdded) {
     return playlistResponse.external_urls.spotify;
@@ -37,11 +38,9 @@ export async function createPlaylist(
 
 export async function addTracksToPlaylist(
   playlistId: string,
-  trackUris: string[]
+  trackUris: string[],
+  accessToken: string
 ) {
-  const session = await auth();
-  // @ts-ignore
-  const accessToken = session?.user?.access_token;
   const url = `${BASE_URL}/playlists/${playlistId}/tracks`;
   const response = await fetch(url, {
     method: "POST",
@@ -59,13 +58,12 @@ export async function addTracksToPlaylist(
 export async function lookupSong({
   artist,
   title,
+  accessToken,
 }: {
   artist: string;
   title: string;
+  accessToken: string;
 }): Promise<TTrack | null> {
-  const session = await auth();
-  // @ts-ignore
-  const accessToken = session?.user?.access_token;
   const urlEncodedArtist = encodeURIComponent(artist);
   const urlEncodedTitle = encodeURIComponent(title);
 
@@ -94,4 +92,22 @@ export async function lookupSong({
   }
 
   return null;
+}
+
+export async function getAccessToken() {
+  const { userId } = await auth();
+
+  if (!userId) throw new Error("User not authenticated");
+
+  const clerk = await clerkClient();
+  const clerkResponse = await clerk.users.getUserOauthAccessToken(
+    userId,
+    "oauth_spotify"
+  );
+
+  const accessToken = clerkResponse.data[0].token || "";
+
+  if (!accessToken) throw new Error("Failed to get access token");
+
+  return accessToken;
 }
