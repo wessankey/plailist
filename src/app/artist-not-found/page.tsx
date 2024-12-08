@@ -24,7 +24,7 @@ export default function ArtistNotFoundPage({
               <li key={artist}>
                 <Link
                   href={`/playlist?artist=${artist}`}
-                  className="block border-2 border-gray-600 p-3 text-lg font-semibold rounded-md mt-4 cursor-pointer hover:scale-101 hover:bg-orange-100 hover:font-bold"
+                  className="block border-2 border-gray-600 p-3 text-lg font-semibold rounded-md mt-4 cursor-pointer hover:scale-101 hover:bg-white hover:font-bold"
                 >
                   {artist}
                 </Link>
