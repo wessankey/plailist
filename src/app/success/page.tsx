@@ -1,6 +1,6 @@
 "use client";
 
-import { Music4, Play, Plus } from "lucide-react";
+import { Play, Plus } from "lucide-react";
 
 export default function SuccessPage({
   searchParams,

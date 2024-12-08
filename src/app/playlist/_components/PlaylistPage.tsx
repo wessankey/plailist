@@ -16,6 +16,8 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader } from "../../../components/Loader";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 type PlaylistPageProps = {
   artist: string;
@@ -45,21 +47,29 @@ export function PlaylistPage({ artist, generatedPlaylist }: PlaylistPageProps) {
     setPlaylist((playlist) => [...playlist, ...additionalSongs]);
   };
 
-  return (
-    <div className="h-screen flex flex-col">
-      <main className="flex-1 overflow-auto p-8">
-        <h1 className="text-5xl font-extrabold">Here&apos;s your playlist</h1>
-        <PlaylistInfo />
+  const uris = new Set(playlist.map((track) => track.uri));
 
-        <div className=" w-full mt-3 mb-3">
-          {playlist.filter(Boolean).map((song) => (
-            <div key={song.uri} className="mt-5 ">
-              <Track {...song} removeTrack={handleRemoveTrack} />
-            </div>
-          ))}
+  return (
+    <div className="h-screen flex flex-col items-center">
+      <main className="overflow-y-auto w-full flex flex-col items-center">
+        <div className="p-8 max-w-[850px] w-full">
+          <h1 className="text-5xl font-extrabold">Here&apos;s your playlist</h1>
+          <PlaylistInfo />
+          <Link
+            href="/"
+            className="w-fit text-lg flex items-center gap-1 font-semibold mt-3 hover:text-yellow-600"
+          >
+            <ArrowLeft /> <span> Back to Search</span>
+          </Link>
+          <div className=" w-full mt-3 mb-3 ">
+            {playlist.filter(Boolean).map((song) => (
+              <div key={song.uri} className="mt-5">
+                <Track {...song} removeTrack={handleRemoveTrack} />
+              </div>
+            ))}
+          </div>
         </div>
       </main>
-
       <div className="flex flex-col gap-4 justify-center items-center md:flex-row border-t-2 border-gray-300 w-full p-5">
         <button
           onClick={() => setIsOpen(true)}
@@ -126,6 +136,8 @@ const AddSongsModal = ({
     );
 
     addSongsToPlaylist(additionalSongs);
+    setIsLoading(false);
+    setSongCount(plans[0]);
     onClose();
   };
 
@@ -143,7 +155,7 @@ const AddSongsModal = ({
                 value={songCount}
                 onChange={setSongCount}
                 aria-label="Server size"
-                className="flex gap-3 mt-3"
+                className="flex gap-3 mt-3 w-full"
               >
                 {plans.map((plan) => (
                   <Field key={plan} className="flex items-center gap-2">
@@ -158,13 +170,13 @@ const AddSongsModal = ({
               </RadioGroup>
               <div className="flex justify-between pt-5">
                 <button
-                  className="rounded-full  px-3 py-1 font-bold"
+                  className="rounded-full px-3 py-1 font-bold"
                   onClick={onClose}
                 >
                   Cancel
                 </button>
                 <button
-                  className="rounded-full bg-blue-600 px-3 py-1 text-white font-bold"
+                  className="rounded-full bg-blue-600 hover:bg-blue-700 px-3 py-1 text-white font-bold"
                   onClick={handleAddSongs}
                 >
                   Add Songs
