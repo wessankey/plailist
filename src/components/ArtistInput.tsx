@@ -20,9 +20,9 @@ export function ArtistInput({ initialArtist }: ArtistInputProps) {
   };
 
   return (
-    <div className="w-full h-screen flex items-center flex-col p-5 md:pt-40">
+    <div className="w-full h-screen flex items-center flex-col p-5 pt-24 md:pt-40">
       <div className="text-8xl">🎸👨‍🎤🥁</div>
-      <h1 className="text-5xl font-extrabold pt-5 md:text-center">
+      <h1 className="text-5xl font-extrabold pt-5 text-center">
         Enter an artist and click Generate Playlist
       </h1>
 

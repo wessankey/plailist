@@ -32,7 +32,7 @@ export function Track({
           height={64}
           className="rounded-md object-cover"
         />
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 mr-2">
           <p className="font-bold text-md truncate">{name}</p>
           <p className="text-gray-700 text-sm">{artist}</p>
         </div>
